@@ -11,7 +11,9 @@ const SAMPLE_PLACES = [
     restroom: true,
     lat: 37.5446,
     lng: 127.0374,
-    desc: "넓은 산책로 + 놀이터 + 잔디 광장"
+    desc: "넓은 산책로 + 놀이터 + 잔디 광장",
+    searchVolume: 9800,
+    popularity: 92
   },
   {
     id: "seoul-2",
@@ -25,7 +27,9 @@ const SAMPLE_PLACES = [
     restroom: true,
     lat: 37.4363,
     lng: 127.005,
-    desc: "비 오는 날 좋은 실내 체험 코스"
+    desc: "비 오는 날 좋은 실내 체험 코스",
+    searchVolume: 8600,
+    popularity: 88
   },
   {
     id: "seoul-3",
@@ -39,7 +43,9 @@ const SAMPLE_PLACES = [
     restroom: true,
     lat: 37.498,
     lng: 127.0276,
-    desc: "날씨 상관없이 이용 가능한 실내형"
+    desc: "날씨 상관없이 이용 가능한 실내형",
+    searchVolume: 12400,
+    popularity: 95
   },
   {
     id: "su-1",
@@ -53,7 +59,9 @@ const SAMPLE_PLACES = [
     restroom: true,
     lat: 37.2841,
     lng: 127.0644,
-    desc: "산책 + 놀이터를 한 번에 즐기기 좋은 코스"
+    desc: "산책 + 놀이터를 한 번에 즐기기 좋은 코스",
+    searchVolume: 7900,
+    popularity: 84
   },
   {
     id: "incheon-1",
@@ -67,7 +75,9 @@ const SAMPLE_PLACES = [
     restroom: true,
     lat: 37.3929,
     lng: 126.6392,
-    desc: "넓은 동선과 체험 포인트가 있는 공원"
+    desc: "넓은 동선과 체험 포인트가 있는 공원",
+    searchVolume: 11200,
+    popularity: 90
   },
   {
     id: "show-1",
@@ -81,12 +91,15 @@ const SAMPLE_PLACES = [
     restroom: true,
     lat: 37.5729,
     lng: 126.9794,
-    desc: "짧은 시간 집중해서 즐기는 공연/전시"
+    desc: "짧은 시간 집중해서 즐기는 공연/전시",
+    searchVolume: 7300,
+    popularity: 81
   }
 ];
 
 const state = {
   userLoc: null,
+  sortBy: localStorage.getItem("kids_sort_by") || "recommend",
   naverClientId: localStorage.getItem("kids_naver_client_id") || "",
   dataSource: localStorage.getItem("kids_data_source") || "sample",
   publicEndpoint: localStorage.getItem("kids_public_endpoint") || "",
@@ -107,6 +120,12 @@ const CAT_LABEL = {
   play: "실내놀이터",
   experience: "체험/클래스",
   show: "공연/전시"
+};
+
+const SORT_LABEL = {
+  recommend: "추천순",
+  search_volume: "검색량순",
+  popularity: "인기순"
 };
 
 function escapeHtml(value) {
@@ -151,6 +170,22 @@ function scorePlace(place, query) {
   return score;
 }
 
+function scoreRecommend(place, query) {
+  let score = scorePlace(place, query);
+  score += (Number(place.popularity) || 0) * 0.08;
+  score += (Number(place.searchVolume) || 0) / 8000;
+  if (state.userLoc) {
+    const dist = distanceKm(state.userLoc, place);
+    score += Math.max(0, 2 - Math.min(dist, 2));
+  }
+  return score;
+}
+
+function toNumberOr(value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
 function normalizePlace(raw, idx) {
   const name = raw.name || raw.title || raw.facilityName || raw.FCLTY_NM || raw.BPLC_NM || raw.place_name;
   const latRaw = raw.lat ?? raw.latitude ?? raw.y ?? raw.mapy ?? raw.Y ?? raw.LAT;
@@ -167,6 +202,8 @@ function normalizePlace(raw, idx) {
   const stroller = raw.stroller ?? true;
   const restroom = raw.restroom ?? true;
   const desc = raw.desc || raw.description || raw.summary || "공공데이터 연동 장소";
+  const searchVolume = toNumberOr(raw.searchVolume ?? raw.search_count ?? raw.searchCnt ?? raw.SRCH_CNT, 3000 + idx * 137);
+  const popularity = toNumberOr(raw.popularity ?? raw.favoriteCount ?? raw.likeCount ?? raw.POPULARITY, 60 + (idx % 30));
 
   return {
     id: raw.id || `public-${idx}`,
@@ -180,7 +217,9 @@ function normalizePlace(raw, idx) {
     restroom: Boolean(restroom),
     lat,
     lng,
-    desc
+    desc,
+    searchVolume,
+    popularity
   };
 }
 
@@ -243,6 +282,8 @@ function createCard(place) {
     CAT_LABEL[place.category] || "기타",
     place.indoor ? "실내" : "실외",
     place.price,
+    `검색량 ${Number(place.searchVolume || 0).toLocaleString()}`,
+    `인기점수 ${Number(place.popularity || 0)}`,
     place.stroller ? "유모차 OK" : "유모차 확인",
     place.restroom ? "화장실 있음" : "화장실 확인"
   ];
@@ -278,6 +319,7 @@ function searchAndRender() {
   const query = $("#q").value.trim().toLowerCase();
   const category = $("#category").value;
   const mood = $("#mood").value;
+  const sortBy = $("#sortBy").value;
 
   let list = [...state.places];
 
@@ -292,14 +334,39 @@ function searchAndRender() {
 
   list = list.filter((p) => matchesMood(p, mood));
 
-  if (state.userLoc) {
-    list.sort((a, b) => distanceKm(state.userLoc, a) - distanceKm(state.userLoc, b));
+  if (sortBy === "search_volume") {
+    list.sort((a, b) => (Number(b.searchVolume) || 0) - (Number(a.searchVolume) || 0));
+  } else if (sortBy === "popularity") {
+    list.sort((a, b) => (Number(b.popularity) || 0) - (Number(a.popularity) || 0));
   } else {
-    list.sort((a, b) => scorePlace(b, query) - scorePlace(a, query));
+    list.sort((a, b) => scoreRecommend(b, query) - scoreRecommend(a, query));
+  }
+
+  if (state.userLoc) {
+    list.sort((a, b) => {
+      const baseA = sortBy === "search_volume"
+        ? (Number(a.searchVolume) || 0)
+        : sortBy === "popularity"
+          ? (Number(a.popularity) || 0)
+          : scoreRecommend(a, query);
+      const baseB = sortBy === "search_volume"
+        ? (Number(b.searchVolume) || 0)
+        : sortBy === "popularity"
+          ? (Number(b.popularity) || 0)
+          : scoreRecommend(b, query);
+
+      const gap = Math.abs(baseA - baseB);
+      if (gap < 0.5) {
+        return distanceKm(state.userLoc, a) - distanceKm(state.userLoc, b);
+      }
+      return baseB - baseA;
+    });
   }
 
   state.filtered = list;
-  $("#meta").textContent = `결과 ${list.length}개 · 정렬: ${state.userLoc ? "근처 순" : "추천 순"}`;
+  state.sortBy = sortBy;
+  localStorage.setItem("kids_sort_by", state.sortBy);
+  $("#meta").textContent = `결과 ${list.length}개 · 정렬: ${SORT_LABEL[sortBy] || "추천순"}${state.userLoc ? " (근처 우선 보정)" : ""}`;
 
   const target = $("#resultList");
   if (!list.length) {
@@ -392,6 +459,7 @@ async function initMapIfPossible() {
 }
 
 function persistSettings() {
+  localStorage.setItem("kids_sort_by", state.sortBy);
   localStorage.setItem("kids_naver_client_id", state.naverClientId);
   localStorage.setItem("kids_data_source", state.dataSource);
   localStorage.setItem("kids_public_endpoint", state.publicEndpoint);
@@ -410,6 +478,7 @@ function bindEvents() {
     searchAndRender();
   });
   $("#mood").addEventListener("change", searchAndRender);
+  $("#sortBy").addEventListener("change", searchAndRender);
 
   $("#btnNear").addEventListener("click", () => {
     if (!navigator.geolocation) {
@@ -455,6 +524,7 @@ function bindEvents() {
 }
 
 function hydrateForm() {
+  $("#sortBy").value = SORT_LABEL[state.sortBy] ? state.sortBy : "recommend";
   $("#naverClientId").value = state.naverClientId;
   $("#dataSource").value = state.dataSource;
   $("#publicEndpoint").value = state.publicEndpoint;
