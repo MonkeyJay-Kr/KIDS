@@ -64,6 +64,38 @@ const SAMPLE_PLACES = [
     popularity: 84
   },
   {
+    id: "anyang-1",
+    name: "안양예술공원 산책 코스",
+    area: "경기 안양 만안구",
+    category: "park",
+    indoor: false,
+    price: "무료",
+    age: ["toddler", "kids"],
+    stroller: true,
+    restroom: true,
+    lat: 37.4138,
+    lng: 126.9327,
+    desc: "가벼운 산책과 야외 체험이 가능한 안양 대표 가족 코스",
+    searchVolume: 6800,
+    popularity: 82
+  },
+  {
+    id: "anyang-2",
+    name: "안양 어린이천문대 체험관",
+    area: "경기 안양 동안구",
+    category: "museum",
+    indoor: true,
+    price: "유료",
+    age: ["kids"],
+    stroller: true,
+    restroom: true,
+    lat: 37.3942,
+    lng: 126.9568,
+    desc: "실내 과학 체험 중심의 주말 가족 프로그램",
+    searchVolume: 5200,
+    popularity: 78
+  },
+  {
     id: "incheon-1",
     name: "송도 센트럴파크",
     area: "인천 연수구 송도",
