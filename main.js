@@ -137,6 +137,29 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+function normalizeText(value) {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]/gu, "");
+}
+
+function matchesQuery(place, rawQuery) {
+  const query = String(rawQuery || "").trim();
+  if (!query) return true;
+
+  const haystack = normalizeText(`${place.name} ${place.area} ${place.desc}`);
+  const queryNorm = normalizeText(query);
+  if (queryNorm && haystack.includes(queryNorm)) return true;
+
+  const tokens = query
+    .split(/[\s,./]+/)
+    .map((token) => normalizeText(token))
+    .filter((token) => token.length >= 2);
+
+  if (!tokens.length) return true;
+  return tokens.some((token) => haystack.includes(token));
+}
+
 function toRad(v) {
   return (v * Math.PI) / 180;
 }
@@ -324,7 +347,7 @@ function searchAndRender() {
   let list = [...state.places];
 
   if (query) {
-    list = list.filter((p) => (p.name + " " + p.area + " " + p.desc).toLowerCase().includes(query));
+    list = list.filter((p) => matchesQuery(p, query));
   }
 
   const finalCategory = state.quickCategory !== "all" ? state.quickCategory : category;
