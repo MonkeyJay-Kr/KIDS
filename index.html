@@ -1,14 +1,1140 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="주말마다 '어디 가지?' 고민 끝! 지역을 입력하면 아이와 함께 갈 만한 근처 놀거리/체험/전시/공원을 추천해 드려요." />
+  <meta name="theme-color" content="#fff6fb" />
+  <title>주말 키즈 플랜 | 우리 동네 아이랑 뭐하지?</title>
+
+  <!-- ✅ AdSense: 여기에 '자동 광고' 또는 '사이트 인증/광고 스니펫'을 넣습니다.
+       (애드센스에서 제공하는 <script ...> 코드를 head에 붙여넣으세요)
+  -->
+
+  <style>
+    :root{
+      --bg0:#fff7fb;
+      --bg1:#f4fbff;
+      --card:#ffffffcc;
+      --stroke:#ffffff;
+      --text:#1f2a37;
+      --muted:#5b6776;
+
+      --p1:#ff4fd8;
+      --p2:#ff8a00;
+      --p3:#20c997;
+      --p4:#4dabf7;
+      --p5:#845ef7;
+
+      --shadow: 0 14px 38px rgba(31,42,55,.10);
+      --shadow2: 0 10px 22px rgba(31,42,55,.08);
+      --radius: 22px;
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(255,79,216,.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(77,171,247,.18), transparent 55%),
+        radial-gradient(1000px 700px at 50% 100%, rgba(32,201,151,.16), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    .wrap{ max-width: 1120px; margin: 0 auto; padding: 24px 18px 50px; }
+
+    /* Top nav */
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:14px; padding: 14px 16px;
+      background: rgba(255,255,255,.70);
+      border:1px solid rgba(255,255,255,.95);
+      border-radius: 18px;
+      box-shadow: var(--shadow2);
+      position: sticky; top: 14px; z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; min-width: 230px;
+    }
+    .logo{
+      width:40px; height:40px; border-radius: 14px;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,.9), transparent 45%),
+        linear-gradient(135deg, var(--p1), var(--p4));
+      box-shadow: 0 10px 22px rgba(255,79,216,.18);
+      display:grid; place-items:center;
+      font-size: 18px;
+    }
+    .brand h1{
+      font-size: 15px; line-height: 1.1; margin:0;
+      letter-spacing: -.3px;
+    }
+    .brand small{ display:block; margin-top:3px; color: var(--muted); font-weight: 600; }
+
+    .nav{
+      display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .nav a{
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.70);
+      border:1px solid rgba(255,255,255,.92);
+      font-weight: 700;
+      color: #2b3646;
+    }
+    .nav a:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+
+    /* Hero */
+    .hero{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media (max-width: 920px){
+      .hero{ grid-template-columns: 1fr; }
+      .brand{ min-width: unset; }
+    }
+
+    .heroCard{
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+      position: relative;
+      overflow:hidden;
+    }
+    .heroCard::before{
+      content:"";
+      position:absolute; inset:-60px -80px auto auto;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.85), transparent 55%),
+                  radial-gradient(circle at 70% 60%, rgba(255,138,0,.22), transparent 60%),
+                  radial-gradient(circle at 30% 70%, rgba(132,94,247,.18), transparent 60%);
+      filter: blur(0px);
+      transform: rotate(12deg);
+    }
+    .heroTitle{
+      position: relative;
+      display:flex; flex-direction:column; gap:8px;
+      margin-bottom: 10px;
+    }
+    .heroTitle h2{
+      font-size: 26px; margin:0;
+      letter-spacing: -.6px;
+      line-height: 1.22;
+    }
+    .heroTitle p{ margin:0; color: var(--muted); font-weight: 650; }
+
+    .pillRow{ display:flex; flex-wrap:wrap; gap:8px; margin: 10px 0 14px; position: relative; }
+    .pill{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.95);
+      background: rgba(255,255,255,.72);
+      font-weight: 750;
+      color: #2b3646;
+      display:flex; align-items:center; gap:8px;
+    }
+    .dot{ width:10px; height:10px; border-radius: 999px; }
+    .d1{ background: var(--p1); } .d2{ background: var(--p2); } .d3{ background: var(--p3); } .d4{ background: var(--p4); }
+
+    /* Search panel */
+    .panel{
+      display:flex; flex-direction:column; gap: 10px;
+      margin-top: 12px;
+      position: relative;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1.3fr .9fr .8fr;
+      gap: 10px;
+    }
+    @media (max-width: 920px){
+      .row{ grid-template-columns: 1fr; }
+    }
+
+    .field{
+      background: rgba(255,255,255,.82);
+      border:1px solid rgba(255,255,255,.95);
+      border-radius: 16px;
+      padding: 10px 12px;
+      box-shadow: 0 10px 18px rgba(31,42,55,.06);
+    }
+    label{
+      display:block;
+      font-weight: 800;
+      letter-spacing: -.3px;
+      font-size: 12px;
+      color: #324154;
+      margin-bottom: 6px;
+    }
+    input[type="search"], select{
+      width:100%;
+      border:1px solid rgba(31,42,55,.10);
+      border-radius: 12px;
+      padding: 12px 12px;
+      font-size: 14px;
+      outline:none;
+      background: white;
+    }
+    input[type="search"]:focus, select:focus{
+      border-color: rgba(77,171,247,.75);
+      box-shadow: 0 0 0 4px rgba(77,171,247,.16);
+    }
+
+    .actions{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center;
+      margin-top: 4px;
+    }
+    .btn{
+      border:0; cursor:pointer;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 900;
+      letter-spacing: -.2px;
+      display:flex; align-items:center; gap:10px;
+      box-shadow: var(--shadow2);
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .primary{
+      color:#0b1020;
+      background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.72)),
+                  linear-gradient(135deg, var(--p1), var(--p4));
+      border:1px solid rgba(255,255,255,.95);
+    }
+    .ghost{
+      background: rgba(255,255,255,.78);
+      border:1px solid rgba(255,255,255,.95);
+      color:#2b3646;
+    }
+    .tiny{
+      font-size: 12px; color: var(--muted);
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.65);
+      border:1px solid rgba(255,255,255,.9);
+    }
+
+    /* Right card (tips + Ad placeholder) */
+    .sideCard{
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .adBox{
+      margin-top: 10px;
+      border-radius: 18px;
+      border: 1px dashed rgba(31,42,55,.20);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+      padding: 14px;
+    }
+    .adBox strong{ display:block; font-size: 13px; }
+    .adBox p{ margin:6px 0 0; color: var(--muted); font-weight: 650; font-size: 13px; }
+
+    /* Results */
+    .sectionTitle{
+      margin: 20px 2px 10px;
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+    }
+    .sectionTitle h3{ margin:0; font-size: 18px; letter-spacing: -.4px; }
+    .sectionTitle .meta{ color: var(--muted); font-weight: 700; font-size: 13px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 620px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 22px;
+      box-shadow: var(--shadow2);
+      padding: 14px;
+      position: relative;
+      overflow:hidden;
+    }
+    .badgeRow{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 8px; }
+    .badge{
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.95);
+      background: rgba(255,255,255,.72);
+    }
+    .b-in{ box-shadow: 0 0 0 3px rgba(255,138,0,.10); }
+    .b-out{ box-shadow: 0 0 0 3px rgba(77,171,247,.10); }
+    .b-free{ box-shadow: 0 0 0 3px rgba(32,201,151,.12); }
+
+    .placeName{
+      margin: 6px 0 4px;
+      font-size: 17px;
+      letter-spacing: -.5px;
+      line-height: 1.2;
+    }
+    .desc{
+      margin: 0;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: 13px;
+      line-height: 1.4;
+      min-height: 44px;
+    }
+
+    .kv{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+      color:#324154;
+      font-weight: 800;
+    }
+    .kv div{
+      background: rgba(255,255,255,.70);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 14px;
+      padding: 10px 10px;
+      display:flex; gap:8px; align-items:center;
+    }
+
+    .cardActions{
+      margin-top: 12px;
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .miniBtn{
+      border:0; cursor:pointer;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      background: rgba(255,255,255,.80);
+      border:1px solid rgba(255,255,255,.95);
+      box-shadow: 0 10px 18px rgba(31,42,55,.06);
+    }
+    .miniBtn:hover{ transform: translateY(-1px); }
+    .heart{ color: #ff2db2; }
+
+    /* Modal */
+    .backdrop{
+      position: fixed; inset:0;
+      background: rgba(17,24,39,.32);
+      display:none;
+      align-items:center; justify-content:center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal{
+      width: min(760px, 100%);
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.95);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(17,24,39,.20);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding: 16px 16px 12px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
+      border-bottom: 1px solid rgba(31,42,55,.08);
+      background:
+        radial-gradient(600px 220px at 20% 0%, rgba(255,79,216,.18), transparent 60%),
+        radial-gradient(520px 200px at 80% 0%, rgba(77,171,247,.18), transparent 60%),
+        rgba(255,255,255,.86);
+    }
+    .modalHead h4{ margin:0; font-size: 18px; letter-spacing: -.4px; }
+    .close{
+      border:0; cursor:pointer;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 900;
+      background: rgba(255,255,255,.78);
+      border:1px solid rgba(255,255,255,.95);
+    }
+    .modalBody{ padding: 14px 16px 16px; }
+    .modalBody p{ margin: 8px 0; color: #2b3646; font-weight: 650; }
+    .modalGrid{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 700px){ .modalGrid{ grid-template-columns: 1fr; } }
+    .panel2{
+      border-radius: 18px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.95);
+      padding: 12px;
+    }
+    .panel2 strong{ display:block; margin-bottom: 6px; }
+    .list{ margin:0; padding-left: 18px; color:#2b3646; font-weight: 650; }
+    .note{
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.70);
+      border: 1px dashed rgba(31,42,55,.18);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Content pages */
+    .pages{
+      margin-top: 26px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 12px;
+    }
+    @media (max-width: 920px){ .pages{ grid-template-columns: 1fr; } }
+    .pageCard{
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 16px;
+    }
+    .pageCard h3{ margin: 0 0 8px; }
+    .pageCard p, .pageCard li{ color:#2b3646; font-weight: 650; line-height: 1.55; }
+    .pageCard code{
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(31,42,55,.08);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    footer{
+      margin-top: 20px;
+      text-align:center;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 12px;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <div class="wrap">
+    <header class="top" role="banner">
+      <div class="brand" aria-label="브랜드">
+        <div class="logo" aria-hidden="true">🧒</div>
+        <div>
+          <h1>주말 키즈 플랜</h1>
+          <small>우리 동네 아이랑 뭐하지?</small>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="빠른 이동">
+        <a href="#search">추천</a>
+        <a href="#tips">주말 팁</a>
+        <a href="#about">소개</a>
+        <a href="#privacy">개인정보</a>
+        <a href="#contact">문의</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="search" aria-label="검색 영역">
+      <div class="heroCard">
+        <div class="heroTitle">
+          <h2>지역만 입력하면<br/>아이랑 갈만한 곳을 추천해드려요 ✨</h2>
+          <p>공원 · 체험 · 박물관 · 실내놀이터 · 전시까지, 주말 고민을 줄여봅시다.</p>
+        </div>
+
+        <div class="pillRow" aria-label="특징">
+          <span class="pill"><span class="dot d1"></span>밝고 심플한 UI</span>
+          <span class="pill"><span class="dot d2"></span>실내/실외 필터</span>
+          <span class="pill"><span class="dot d3"></span>무료/유료 태그</span>
+          <span class="pill"><span class="dot d4"></span>현재 위치 ‘근처’ 정렬</span>
+        </div>
+
+        <div class="panel" aria-label="검색 패널">
+          <div class="row">
+            <div class="field">
+              <label for="q">원하는 지역/동네</label>
+              <input id="q" type="search" placeholder="예) 서울 강남, 수원 영통, 부산 해운대, 인천 송도" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="category">카테고리</label>
+              <select id="category">
+                <option value="all">전체</option>
+                <option value="park">공원/자연</option>
+                <option value="museum">박물관/과학관</option>
+                <option value="play">실내놀이터</option>
+                <option value="experience">체험/클래스</option>
+                <option value="show">공연/전시</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="mood">상황</label>
+              <select id="mood">
+                <option value="any">상관없음</option>
+                <option value="rainy">비 오는 날(실내 우선)</option>
+                <option value="toddler">유아(0~4) 우선</option>
+                <option value="kids">아동(5~10) 우선</option>
+                <option value="stroller">유모차/편의시설 우선</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="btnSearch" type="button">🔎 추천 보기</button>
+            <button class="btn ghost" id="btnNear" type="button">📍 현재 위치로 근처 찾기</button>
+            <button class="btn ghost" id="btnSurprise" type="button">🎲 오늘의 랜덤 추천</button>
+            <span class="tiny" id="locHint">Tip: 위치 허용 시 ‘근처 순’으로 정렬돼요.</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sideCard" aria-label="오른쪽 카드">
+        <h3 style="margin:0 0 6px;">오늘의 추천 기준</h3>
+        <p style="margin:0;color:var(--muted);font-weight:700;line-height:1.5;">
+          지역 키워드 + 카테고리 + 상황(비 오는 날/연령대/유모차)로 필터링해요.
+          실제 운영 시에는 공공데이터/지도 API로 데이터를 연결하면 됩니다.
+        </p>
+
+        <div class="adBox" aria-label="광고 자리">
+          <strong>🧩 광고 자리(예시)</strong>
+          <p>애드센스 승인 후, 이 박스 위치에 광고 단위를 넣어보세요.</p>
+
+          <!-- ✅ AdSense: 광고 단위(디스플레이 광고) 코드를 여기에 넣을 수 있습니다 -->
+          <!-- 예: <ins class="adsbygoogle" ...></ins> + (adsbygoogle = window.adsbygoogle || []).push({}); -->
+        </div>
+
+        <div style="margin-top:12px;" class="note">
+          ✅ 애드센스는 “콘텐츠가 없거나 가치가 낮다”는 이유로 거절될 수 있어,
+          소개/개인정보/문의 같은 기본 페이지와 충분한 콘텐츠를 갖추는 쪽이 유리해요.
+        </div>
+      </aside>
+    </section>
+
+    <section aria-label="추천 결과">
+      <div class="sectionTitle">
+        <h3>추천 결과</h3>
+        <div class="meta" id="meta">지역을 입력하고 “추천 보기”를 눌러주세요.</div>
+      </div>
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </section>
+
+    <section id="tips" aria-label="주말 팁" class="pages">
+      <article class="pageCard">
+        <h3>주말 팁(콘텐츠)</h3>
+        <p>
+          애드센스 관점에서 “콘텐츠가 풍부한 사이트”가 유리한 편이라,
+          단순 검색만 있는 사이트보다는 <b>짧은 가이드/체크리스트/육아 팁</b> 같은 글이 같이 있으면 좋아요.
+        </p>
+        <ul>
+          <li><b>비 오는 날</b>: 실내놀이터 + 카페/키즈존 + 도서관/체험관 조합이 안정적</li>
+          <li><b>미세먼지</b>: 실내 전시/과학관/박물관 + 짧은 이동</li>
+          <li><b>체력 방전</b>: 공원 + 킥보드/자전거 + 놀이터 코스</li>
+          <li><b>주차/화장실</b> 체크는 출발 전 필수(리뷰/시설 안내)</li>
+        </ul>
+        <p>
+          다음 단계로는: (1) 실제 장소 DB를 늘리고 (2) 리뷰/후기 기능을 붙여 “체류시간”을 늘리는 방향이 좋아요.
+        </p>
+      </article>
+
+      <aside class="pageCard">
+        <h3>데이터는 어떻게 늘려요?</h3>
+        <p>
+          지금은 샘플 데이터로 동작하지만, 운영용으로는 아래 중 하나로 확장하면 됩니다.
+        </p>
+        <ul>
+          <li>공공데이터(관광/문화/시설 등) API로 수집</li>
+          <li>지도 API(장소 검색) 연동</li>
+          <li>직접 큐레이션 + 사용자 제보 폼(예: 구글폼/폼스프리)</li>
+        </ul>
+        <p>
+          ⚠️ 지도/장소 API 키는 프론트에 노출되면 위험할 수 있으니,
+          서버리스(예: 워커/펑션)로 프록시를 두는 방식이 안전합니다.
+        </p>
+      </aside>
+    </section>
+
+    <section class="pages" aria-label="정책/소개">
+      <article class="pageCard" id="about">
+        <h3>소개</h3>
+        <p>
+          <b>주말 키즈 플랜</b>은 “주말에 아이랑 어디 가지?”라는 고민을 줄이기 위해
+          지역 기반으로 놀거리/볼거리/체험을 추천하는 큐레이션 사이트입니다.
+        </p>
+        <p>
+          운영 목표: <b>가족에게 도움되는 정보</b>를 꾸준히 쌓고, 트래픽이 확보되면 광고(AdSense)로 수익화합니다.
+        </p>
+      </article>
+
+      <article class="pageCard" id="privacy">
+        <h3>개인정보처리방침(샘플)</h3>
+        <p>
+          본 사이트는 기본적으로 <b>사용자가 입력한 검색어</b>를 브라우저 내에서만 처리하며,
+          서버로 전송하지 않습니다(샘플 구현 기준).
+        </p>
+        <ul>
+          <li>수집 항목: (선택) 위치정보 — 사용자가 “현재 위치” 기능을 허용한 경우에만 브라우저에서 사용</li>
+          <li>이용 목적: 근처 추천/거리 계산</li>
+          <li>보관/전송: 본 데모는 서버 저장 없음</li>
+        </ul>
+        <p>
+          향후 로그인/후기/제보 기능을 붙이는 경우, 실제 수집 항목에 맞게 문구를 업데이트하세요.
+        </p>
+      </article>
+    </section>
+
+    <section class="pages" aria-label="문의/면책">
+      <article class="pageCard" id="contact">
+        <h3>문의</h3>
+        <p>
+          제휴/장소 제보/오류 신고는 아래로 보내주세요.
+          <br/>
+          이메일: <code>your-email@example.com</code>
+        </p>
+        <p>
+          (추천) 제보 폼을 붙이고 싶다면 “폼 서비스(외부)”를 연결해 간단히 받을 수 있어요.
+        </p>
+      </article>
+
+      <article class="pageCard">
+        <h3>면책(안전 안내)</h3>
+        <ul>
+          <li>운영시간/요금/휴무는 수시로 변경될 수 있으니 방문 전 공식 안내를 확인하세요.</li>
+          <li>아이 안전은 보호자 책임이며, 놀이시설 이용 시 현장 규정을 따라주세요.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      © <span id="year"></span> 주말 키즈 플랜 · 밝은 테마 데모 · Made for AdSense-friendly structure
+    </footer>
+  </div>
+
+  <!-- Modal -->
+  <div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-label="장소 상세" tabindex="-1">
+    <div class="modal">
+      <div class="modalHead">
+        <div>
+          <h4 id="mTitle">상세 정보</h4>
+          <div id="mBadges" class="badgeRow" style="margin-top:10px;"></div>
+        </div>
+        <button class="close" id="mClose" type="button">닫기 ✕</button>
+      </div>
+      <div class="modalBody">
+        <p id="mDesc"></p>
+        <div class="modalGrid">
+          <div class="panel2">
+            <strong>기본 정보</strong>
+            <ul class="list" id="mInfo"></ul>
+          </div>
+          <div class="panel2">
+            <strong>추천 포인트</strong>
+            <ul class="list" id="mTips"></ul>
+          </div>
+        </div>
+        <div class="note" id="mNote"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // 0) 샘플 데이터 (운영 시 DB/API로 교체)
+    // -----------------------------
+    const PLACES = [
+      {
+        id:"seoul-1",
+        name:"서울숲 놀이터 & 산책 코스",
+        area:"서울 성동구",
+        category:"park",
+        indoor:false,
+        price:"무료",
+        age:["toddler","kids"],
+        stroller:true,
+        restroom:true,
+        parking:"주변 유료 주차장",
+        hours:"상시(시설별 상이)",
+        lat:37.5446, lng:127.0374,
+        desc:"넓은 산책로 + 놀이터 + 잔디 광장. 주말에 가볍게 걷고 뛰기 좋아요.",
+        tips:[
+          "오전 일찍 가면 덜 붐벼요",
+          "돗자리/간식 챙기면 만족도↑",
+          "모래놀이 좋아하는 아이면 특히 추천"
+        ]
+      },
+      {
+        id:"seoul-2",
+        name:"국립과천과학관(실내 체험)",
+        area:"경기 과천",
+        category:"museum",
+        indoor:true,
+        price:"유료(전시별 상이)",
+        age:["kids"],
+        stroller:true,
+        restroom:true,
+        parking:"주차장 있음(혼잡 가능)",
+        hours:"화~일(휴관일 확인)",
+        lat:37.4363, lng:127.0050,
+        desc:"비 오는 날 최고. 과학 체험/전시/상설관 위주로 반나절 코스로 좋아요.",
+        tips:[
+          "관람 루트(상설→체험→기념품)로 동선 잡기",
+          "점심시간 혼잡하니 시간 분산 추천",
+          "연령대별 전시 난이도 확인"
+        ]
+      },
+      {
+        id:"seoul-3",
+        name:"키즈 실내놀이터(샘플)",
+        area:"서울 강남구",
+        category:"play",
+        indoor:true,
+        price:"유료(시간제)",
+        age:["toddler","kids"],
+        stroller:true,
+        restroom:true,
+        parking:"건물 주차(유료)",
+        hours:"10:00~20:00(매장별 상이)",
+        lat:37.4980, lng:127.0276,
+        desc:"날씨 상관없이 놀기 좋고, 보호자 휴식 공간이 있는 타입을 가정한 샘플입니다.",
+        tips:[
+          "양말/여벌 옷 챙기면 좋아요",
+          "아이 동선(미끄럼틀/볼풀/클라이밍) 확인",
+          "피크타임(오후) 예약 여부 확인"
+        ]
+      },
+      {
+        id:"su-1",
+        name:"수원 광교호수공원 산책 & 놀이터",
+        area:"경기 수원 영통구",
+        category:"park",
+        indoor:false,
+        price:"무료",
+        age:["toddler","kids"],
+        stroller:true,
+        restroom:true,
+        parking:"주차장 있음(주말 혼잡)",
+        hours:"상시",
+        lat:37.2841, lng:127.0644,
+        desc:"호수 산책 + 놀이터 + 사진 스팟. 유모차 이동도 비교적 편한 편.",
+        tips:[
+          "해질 무렵 풍경이 예뻐요",
+          "간단한 자전거/킥보드 코스도 OK",
+          "바람 부는 날 겉옷 챙기기"
+        ]
+      },
+      {
+        id:"incheon-1",
+        name:"송도 센트럴파크(보트/산책)",
+        area:"인천 연수구 송도",
+        category:"park",
+        indoor:false,
+        price:"무료(체험은 유료)",
+        age:["kids"],
+        stroller:true,
+        restroom:true,
+        parking:"주변 유료 주차장",
+        hours:"상시(체험별 상이)",
+        lat:37.3929, lng:126.6392,
+        desc:"넓은 공원에서 뛰놀기 좋고, 아이가 좋아하는 포인트가 많아요(체험은 선택).",
+        tips:[
+          "주말엔 주차/혼잡 고려해서 일찍 출발",
+          "간식/물 챙기면 이동이 편해요",
+          "바람이 강할 수 있어요"
+        ]
+      },
+      {
+        id:"busan-1",
+        name:"부산 해운대 바닷가 산책(샘플 코스)",
+        area:"부산 해운대구",
+        category:"park",
+        indoor:false,
+        price:"무료",
+        age:["kids"],
+        stroller:true,
+        restroom:true,
+        parking:"주변 유료 주차장",
+        hours:"상시",
+        lat:35.1587, lng:129.1604,
+        desc:"바닷가 산책 + 모래놀이. 날씨 좋은 날 ‘체력 방전’에 최고!",
+        tips:[
+          "바람/햇빛 대비(모자/선크림/겉옷)",
+          "모래 장난감 있으면 만족도↑",
+          "혼잡 시간대 피하기"
+        ]
+      },
+      {
+        id:"class-1",
+        name:"도예/미술 키즈 클래스(샘플)",
+        area:"서울 마포구",
+        category:"experience",
+        indoor:true,
+        price:"유료(예약제)",
+        age:["kids"],
+        stroller:false,
+        restroom:true,
+        parking:"주변 주차",
+        hours:"예약제",
+        lat:37.5563, lng:126.9220,
+        desc:"집에서 하기 어려운 만들기/체험형. 비 오는 날에 특히 좋아요.",
+        tips:[
+          "예약/준비물/소요시간 확인",
+          "작품 건조/배송 여부 체크",
+          "연령 제한 있는지 확인"
+        ]
+      },
+      {
+        id:"show-1",
+        name:"키즈 전시/공연(샘플)",
+        area:"서울 종로구",
+        category:"show",
+        indoor:true,
+        price:"유료",
+        age:["kids"],
+        stroller:true,
+        restroom:true,
+        parking:"주변 주차",
+        hours:"회차별 상이",
+        lat:37.5729, lng:126.9794,
+        desc:"짧은 시간 집중해서 즐길 수 있어요. 비 오는 날 코스로 좋습니다.",
+        tips:[
+          "회차/좌석/관람 연령 확인",
+          "아이 휴식 시간 고려해서 일정 짜기",
+          "끝나고 근처 카페/공원 연계"
+        ]
+      }
+    ];
+
+    const $ = (sel) => document.querySelector(sel);
+    const grid = $("#grid");
+    const meta = $("#meta");
+
+    const state = {
+      userLoc: null,   // {lat,lng}
+      favorites: new Set(JSON.parse(localStorage.getItem("kids_plan_favs") || "[]"))
+    };
+
+    function saveFav(){
+      localStorage.setItem("kids_plan_favs", JSON.stringify([...state.favorites]));
+    }
+
+    // -----------------------------
+    // 1) 유틸: 거리 계산 (Haversine)
+    // -----------------------------
+    function toRad(v){ return (v * Math.PI) / 180; }
+    function distanceKm(a, b){
+      const R = 6371;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
+      const s =
+        Math.sin(dLat/2)**2 +
+        Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+      return 2 * R * Math.asin(Math.sqrt(s));
+    }
+
+    // -----------------------------
+    // 2) 필터링 로직
+    // -----------------------------
+    function matchesMood(p, mood){
+      if(mood === "any") return true;
+      if(mood === "rainy") return p.indoor === true;               // 비오는 날 = 실내 우선
+      if(mood === "toddler") return p.age.includes("toddler");
+      if(mood === "kids") return p.age.includes("kids");
+      if(mood === "stroller") return p.stroller === true;
+      return true;
+    }
+
+    function scorePlace(p, query){
+      // 간단한 추천 점수(운영 시에는 클릭/저장/체류시간 등으로 개선)
+      let s = 0;
+      const q = (query || "").trim().toLowerCase();
+      const hay = (p.name + " " + p.area + " " + p.desc).toLowerCase();
+
+      if(q && hay.includes(q)) s += 3;
+      if(p.price.includes("무료")) s += 1;
+      if(p.indoor) s += 0.5;
+      if(p.restroom) s += 0.3;
+
+      if(state.favorites.has(p.id)) s += 2;
+      return s;
+    }
+
+    function search(){
+      const query = $("#q").value.trim();
+      const category = $("#category").value;
+      const mood = $("#mood").value;
+
+      let list = PLACES.slice();
+
+      // 1) 지역 키워드(주소/지역) 필터
+      if(query){
+        const q = query.toLowerCase();
+        list = list.filter(p => (p.area + " " + p.name + " " + p.desc).toLowerCase().includes(q));
+      }
+
+      // 2) 카테고리 필터
+      if(category !== "all"){
+        list = list.filter(p => p.category === category);
+      }
+
+      // 3) 상황 필터
+      list = list.filter(p => matchesMood(p, mood));
+
+      // 4) 정렬: 위치 있으면 거리순, 아니면 추천 점수순
+      if(state.userLoc){
+        list.forEach(p => p._dist = distanceKm(state.userLoc, p));
+        list.sort((a,b) => (a._dist ?? 9999) - (b._dist ?? 9999));
+      }else{
+        list.forEach(p => p._score = scorePlace(p, query));
+        list.sort((a,b) => (b._score ?? 0) - (a._score ?? 0));
+      }
+
+      render(list, query, category, mood);
+    }
+
+    // -----------------------------
+    // 3) 렌더링
+    // -----------------------------
+    function catLabel(c){
+      return ({
+        park:"공원/자연",
+        museum:"박물관/과학관",
+        play:"실내놀이터",
+        experience:"체험/클래스",
+        show:"공연/전시"
+      })[c] || "기타";
+    }
+
+    function badgeIndoor(p){
+      if(p.indoor) return `<span class="badge b-in">🏠 실내</span>`;
+      return `<span class="badge b-out">🌤️ 실외</span>`;
+    }
+    function badgePrice(p){
+      if(p.price.includes("무료")) return `<span class="badge b-free">🆓 무료</span>`;
+      return `<span class="badge">💳 유료</span>`;
+    }
+
+    function render(list, query, category, mood){
+      grid.innerHTML = "";
+
+      const pretty = [
+        query ? `지역: “${escapeHtml(query)}”` : "지역: (미입력)",
+        category !== "all" ? `카테고리: ${catLabel(category)}` : "카테고리: 전체",
+        mood !== "any" ? `상황: ${moodLabel(mood)}` : "상황: 상관없음",
+        state.userLoc ? "정렬: 근처 순" : "정렬: 추천 순"
+      ].join(" · ");
+
+      meta.textContent = `${pretty} · 결과 ${list.length}개`;
+
+      if(list.length === 0){
+        grid.innerHTML = `
+          <div class="card" style="grid-column:1/-1;">
+            <h4 style="margin:0 0 6px;">검색 결과가 없어요 😢</h4>
+            <p class="desc" style="min-height:auto;">
+              지역 키워드를 조금 더 넓게(예: ‘수원’ / ‘강남’) 입력하거나,
+              카테고리/상황 필터를 ‘전체/상관없음’으로 바꿔보세요.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      for(const p of list){
+        const dist = (state.userLoc && Number.isFinite(p._dist)) ? ` · 📍 ${p._dist.toFixed(1)}km` : "";
+        const fav = state.favorites.has(p.id);
+        const ageText = p.age.includes("toddler") && p.age.includes("kids") ? "유아~아동" :
+                        p.age.includes("toddler") ? "유아" : "아동";
+
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="badgeRow">
+            <span class="badge">🧭 ${escapeHtml(p.area)}${dist}</span>
+            <span class="badge">${catLabel(p.category)}</span>
+            ${badgeIndoor(p)}
+            ${badgePrice(p)}
+          </div>
+
+          <h4 class="placeName">${escapeHtml(p.name)}</h4>
+          <p class="desc">${escapeHtml(p.desc)}</p>
+
+          <div class="kv">
+            <div>👶 대상: <span style="font-weight:900;margin-left:auto;">${ageText}</span></div>
+            <div>🚻 화장실: <span style="font-weight:900;margin-left:auto;">${p.restroom ? "있음" : "확인 필요"}</span></div>
+            <div>🛒 요금: <span style="font-weight:900;margin-left:auto;">${escapeHtml(p.price)}</span></div>
+            <div>🍼 유모차: <span style="font-weight:900;margin-left:auto;">${p.stroller ? "OK" : "주의"}</span></div>
+          </div>
+
+          <div class="cardActions">
+            <button class="miniBtn" data-detail="${p.id}">자세히 보기</button>
+            <button class="miniBtn" data-fav="${p.id}">
+              <span class="heart">${fav ? "♥" : "♡"}</span> 찜
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+
+      // 이벤트 바인딩
+      grid.querySelectorAll("[data-detail]").forEach(btn=>{
+        btn.addEventListener("click", () => openModal(btn.getAttribute("data-detail")));
+      });
+      grid.querySelectorAll("[data-fav]").forEach(btn=>{
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-fav");
+          if(state.favorites.has(id)) state.favorites.delete(id);
+          else state.favorites.add(id);
+          saveFav();
+          search();
+        });
+      });
+    }
+
+    function moodLabel(m){
+      return ({
+        rainy:"비 오는 날(실내 우선)",
+        toddler:"유아(0~4) 우선",
+        kids:"아동(5~10) 우선",
+        stroller:"유모차/편의시설 우선"
+      })[m] || m;
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    // -----------------------------
+    // 4) 모달
+    // -----------------------------
+    const backdrop = $("#backdrop");
+    const mClose = $("#mClose");
+    mClose.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (e)=>{ if(e.target === backdrop) closeModal(); });
+    window.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+
+    function openModal(id){
+      const p = PLACES.find(x => x.id === id);
+      if(!p) return;
+
+      $("#mTitle").textContent = p.name;
+      $("#mDesc").textContent = p.desc;
+
+      $("#mBadges").innerHTML = `
+        <span class="badge">🧭 ${escapeHtml(p.area)}</span>
+        <span class="badge">${catLabel(p.category)}</span>
+        ${badgeIndoor(p)}
+        ${badgePrice(p)}
+      `;
+
+      const info = [
+        `운영/이용: ${p.hours}`,
+        `주차: ${p.parking}`,
+        `화장실: ${p.restroom ? "있음" : "확인 필요"}`,
+        `유모차: ${p.stroller ? "이동 편함/가능" : "동선 확인 필요"}`,
+        `요금: ${p.price}`
+      ];
+      $("#mInfo").innerHTML = info.map(x=>`<li>${escapeHtml(x)}</li>`).join("");
+
+      $("#mTips").innerHTML = p.tips.map(x=>`<li>${escapeHtml(x)}</li>`).join("");
+
+      const note = state.userLoc
+        ? `현재 위치 기준으로 약 ${distanceKm(state.userLoc, p).toFixed(1)}km 거리예요. (실제 이동 시간은 교통 상황에 따라 달라요)`
+        : `현재 위치를 켜면 ‘근처 순’으로 더 정확하게 정렬할 수 있어요.`;
+
+      $("#mNote").textContent = note;
+
+      backdrop.style.display = "flex";
+      backdrop.focus();
+    }
+
+    function closeModal(){
+      backdrop.style.display = "none";
+    }
+
+    // -----------------------------
+    // 5) 위치 가져오기
+    // -----------------------------
+    async function getLocation(){
+      if(!navigator.geolocation){
+        alert("이 브라우저는 위치 기능을 지원하지 않아요.");
+        return;
+      }
+      $("#locHint").textContent = "위치 확인 중… (허용하면 근처 순으로 정렬돼요)";
+      navigator.geolocation.getCurrentPosition(
+        (pos)=>{
+          state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          $("#locHint").textContent = "위치 설정 완료! 이제 ‘근처 순’으로 정렬돼요.";
+          search();
+        },
+        (err)=>{
+          console.log(err);
+          $("#locHint").textContent = "위치 허용이 꺼져있어요. 지역 검색은 계속 가능합니다.";
+          alert("위치 권한이 없어 근처 정렬을 할 수 없어요. 지역 입력으로 검색해 주세요!");
+        },
+        { enableHighAccuracy:false, timeout: 8000, maximumAge: 60000 }
+      );
+    }
+
+    // -----------------------------
+    // 6) 버튼 이벤트
+    // -----------------------------
+    $("#btnSearch").addEventListener("click", search);
+    $("#btnNear").addEventListener("click", getLocation);
+    $("#btnSurprise").addEventListener("click", ()=>{
+      // 랜덤: 현재 필터 조건을 적용한 뒤, 상위 1~3개 랜덤 제안
+      const query = $("#q").value.trim();
+      const category = $("#category").value;
+      const mood = $("#mood").value;
+
+      let list = PLACES.slice();
+      if(query){
+        const q = query.toLowerCase();
+        list = list.filter(p => (p.area + " " + p.name + " " + p.desc).toLowerCase().includes(q));
+      }
+      if(category !== "all") list = list.filter(p => p.category === category);
+      list = list.filter(p => matchesMood(p, mood));
+
+      // 점수 기반 상위 그룹
+      list.forEach(p => p._score = scorePlace(p, query));
+      list.sort((a,b)=> (b._score ?? 0) - (a._score ?? 0));
+      const top = list.slice(0, Math.min(6, list.length));
+
+      // 셔플 후 3개
+      for(let i=top.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [top[i], top[j]] = [top[j], top[i]];
+      }
+      render(top.slice(0,3), query, category, mood);
+    });
+
+    // Enter로 검색
+    $("#q").addEventListener("keydown", (e)=>{
+      if(e.key === "Enter") search();
+    });
+
+    // init
+    $("#year").textContent = new Date().getFullYear();
+    search(); // 초기 렌더
+  </script>
 </body>
 </html>
