@@ -1,1 +1,19 @@
-A simple HTML/JS/CSS starter template
+# 찰칵이
+
+쑥쑥찰칵처럼 **가족이 함께 쓰는 아기 성장 사진 앨범** MVP입니다.
+
+## 기능
+
+- 앨범 만들기 (아이 이름 · 생일)
+- **초대 코드**로 가족 참여
+- 사진 업로드 → **개월별 자동 정리**
+- 가족 전원 공유 · 좋아요 · 댓글
+
+## 실행
+
+```bash
+npm install
+npm run dev
+```
+
+로컬에서는 Cursor identity가 시뮬레이트됩니다. 배포 후 private/team으로 열면 로그인한 가족이 실제로 공유됩니다.
