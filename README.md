@@ -17,3 +17,4 @@ npm run dev
 ```
 
 로컬에서는 Cursor identity가 시뮬레이트됩니다. 배포 후 private/team으로 열면 로그인한 가족이 실제로 공유됩니다.
+
